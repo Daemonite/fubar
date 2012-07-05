@@ -1,0 +1,40 @@
+<tr>
+  <td class="job-target">
+    <input type="hidden" name="id" value="{{_id}}">
+    <input type="hidden" name="rev" value="{{_rev}}">
+    <span class="job-display">{{target}}</span>
+    <span class="job-edit"><input type="text" name="target" value="{{target}}"></span>
+  </td>
+  <td class="job-create-target">
+    <span class="job-display">{{#create_target}}Yes{{/create_target}}{{^create_target}}No{{/create_target}}</span>
+    <span class="job-edit"><input type="checkbox" name="create_target" value="1" {{#create_target}}checked{{/create_target}}></span>
+  </td>
+  <td class="job-logtypes">
+    <span class="job-display">{{#logtypes}}{{#active}}{{label}}{{/active}}{{/logtypes}}</span>
+    <span class="job-edit">
+      <select name="logtypes" class="span2" multiple="multiple">
+        {{#logtypes}}<option value="{{value}}"{{#active}} selected{{/active}}>{{label}}</option>{{/logtypes}}
+      </select>
+	  <br>
+	  <input type="text" class="input-small" name="logtypes">
+    </span>
+  </td>
+  <td class="job-continuous">
+    <span class="job-display">{{#continuous}}Yes{{/continuous}}{{^continuous}}No{{/continuous}}</span>
+    <span class="job-edit"><input type="checkbox" name="continuous" value="1" {{#continuous}}checked{{/continuous}}></span>
+  </td>
+  <td class="job-status">
+    <span class="job-display" title="{{_replication_state_time}}">{{_replication_state}}</span>
+    <span class="job-edit"></span>
+  </td>
+  <td class="job-actions">
+    <span class="job-display">
+      <a href="#" class="job-change"><span class="icon icon-pencil">&nbsp;</span></a>
+      <a href="#" class="job-remove"><span class="icon icon-minus">&nbsp;</span></a>
+    </span>
+    <span class="job-edit">
+      <a href="#" class="job-save"><span class="icon icon-ok">&nbsp;</span></a>
+      <a href="#" class="job-cancel"><span class="icon icon-remove">&nbsp;</span></a>
+    </span>
+  </td>
+</tr>

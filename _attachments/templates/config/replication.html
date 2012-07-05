@@ -1,0 +1,17 @@
+<h2>Replication Jobs</h2>
+<table class="table table-striped jobs-table">
+  <thead>
+    <th class="job-target">Target</th>
+    <th class="job-create-target">Create Target</th>
+    <th class="job-logtypes">Log Types</th>
+    <th class="job-continuous">Continuous</th>
+    <th class="job-status">Status</th>
+    <th class="job-actions">&nbsp;</th>
+  </thead>
+  <tbody>
+    {{#jobs}}{{> replication-teaser}}{{/jobs}}
+  </tbody>
+  <tfoot>
+    {{> replication-form}}
+  </tfoot>
+</table>

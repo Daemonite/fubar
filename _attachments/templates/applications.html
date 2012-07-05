@@ -1,0 +1,19 @@
+<table class="table table-striped application-table">
+  <thead>
+    <tr>
+      <th></th>
+      {{#logtypes}}<th>{{name}}</th>{{/logtypes}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#applications}}
+    <tr>
+      <th><a href="{{#applicationurl}}{{name}}{{/applicationurl}}">{{name}}</a></th>
+      {{#logtypes}}
+      <td class='sparkline'>{{#sparkline}}{{data}}{{/sparkline}}</td>
+      {{/logtypes}}
+    </tr>
+    {{/applications}}
+  </tbody>
+</table>
+<p><em>Protip:</em> If you setup continuous replication between this database and a remote one, this list will reflect remote changes in near real-time.</p>

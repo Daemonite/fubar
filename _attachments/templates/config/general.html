@@ -1,0 +1,13 @@
+<form class="form form-horizontal form-config">
+	<div class="control-group">
+		<label class="control-label" for="log-db">Log Database</label>
+		<div class="controls">
+			<select name="log-db" id="log-db">
+				{{#dbs}}<option{{#active}} selected{{/active}}>{{name}}</option>{{/dbs}}
+			</select>
+		</div>
+	</div>
+	<div class="form-actions">
+		<a href="#" class="btn general-update">Save Changes</a>
+	</div>
+</form>

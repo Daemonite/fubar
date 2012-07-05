@@ -1,0 +1,16 @@
+<tr>
+  <td><input type="text" name="target" id="job-target" placeholder="e.g. localdb, http://remotehost:5984/remotedb"></td>
+  <td><input type="checkbox" name="create_target" id="job-create_target" value="1" checked></td>
+  <td class="job-logtypes">
+    <select name="logtypes" class="span2" multiple="multiple">
+      {{#logtypes}}<option value="{{value}}">{{label}}</option>{{/logtypes}}
+    </select>
+	<br>
+	<input type="text" class="input-small" name="logtypes">
+  </td>
+  <td><input type="checkbox" name="continuous" id="job-continuous" value="1" checked></td>
+  <td>&nbsp;</td>
+  <td>
+    <a href="##" class="job-create"><span class="icon icon-plus">&nbsp;</a>
+  </td>
+</tr>

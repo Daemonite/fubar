@@ -1,0 +1,25 @@
+<ul class="nav nav-tabs">
+  {{#applications}}
+  <li{{#active}} class="active"{{/active}}><a href="{{#applicationurl}}{{key}}{{/applicationurl}}">{{name}}</a></li>
+  {{/applications}}
+</ul>
+{{> fragment-pagination}}
+<table class="table table-striped error-table">
+  <thead>
+    <tr>
+      <th>Message</th>
+	  <th>&nbsp;</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#errors}}
+    <tr{{#active}} class="alert-info"{{/active}}>
+      <td class="message"><a href="{{#errorurl}}{{message}}{{/errorurl}}">{{message}}</a></td>
+      <td class="sparkline">{{#sparkline}}{{data}}{{/sparkline}}</td>
+	  <td class="total">{{total}}</td>
+    </tr>
+    {{/errors}}
+  </tbody>
+</table>
+{{> fragment-pagination}}

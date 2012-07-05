@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+  {{#logtypes}}
+  <li{{#active}} class="active"{{/active}}><a href="{{#logtypeurl}}{{name}}{{/logtypeurl}}">{{name}}</a></li>
+  {{/logtypes}}
+</ul>
+{{> fragment-pagination}}
+<table class="table table-striped log-table">
+  <thead>
+    <tr>
+      <th class="logseq">&nbsp;</th>
+      <th class="time">Time</th>
+      {{#includelogtype}}<th class="logtype">Type</th>{{/includelogtype}}
+      <th class="summary">Summary</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#logs}}
+    {{> fragment-log-teaser}}
+    {{/logs}}
+  </tbody>
+</table>
+{{> fragment-pagination}}

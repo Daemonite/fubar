@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="style/main.css" type="text/css">
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <span id="fubar" class="brand" href="#">Fubar</span>
+          <ul class="nav">
+          	<li><a href="index.html">Overview</a></li>
+            <li class="dropdown">
+              <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">Applications <b class="caret"></b></a>
+              <ul id="application-menu" class="dropdown-menu"></ul>
+            </li>
+			<li>
+			  <a href="errors.html">Common Errors</a>
+			</li>
+            <li><a href="config.html">Configure</a></li>
+          </ul>
+		  <span id="ajax-indicator" class="icon"></span>
+          <span id="account"></span>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div id="heading" class="span12">
+          <h1 id="title"></h1>
+        </div>
+      </div>
+      <div class="row"><div id="error" class="span12"></div></div>
+      <div class="row"><div id="content" class="span12"><div class="empty-content"></div></div></div>
+    </div>
+  </body>
+  
+  <script src="/_utils/script/sha1.js"></script>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="script/jquery-1.7.2.min.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="vendor/couchapp/jquery.couch.app.util.js"></script>
+  <script src="vendor/couchapp/jquery.couchLogin.js"></script>
+  <script src="vendor/couchapp/jquery.couchProfile.js"></script>
+  <script src="vendor/couchapp/md5.js"></script>
+  <script src="vendor/couchapp/jquery.mustache.js"></script>
+  <script src="script/jquery.sparkline.min.js"></script>
+  <script src="bootstrap/js/bootstrap.js"></script>
+  <script src="script/util.js"></script>
+  <script src="script/application.js"></script>
+
+</html>

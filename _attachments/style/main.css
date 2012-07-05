@@ -1,0 +1,32 @@
+#fubar { color:#9acd66; }
+
+#heading { padding-top:60px; padding-bottom:2em; }
+
+.sparkline { width:110px; }
+.inlinesparkline { padding:0; margin:0; }
+
+.log-table tbody tr, .application-table tbody tr, .error-table tbody tr { cursor:pointer; }
+
+.log-table {}
+.log-table .seq { width:35px; }
+.log-table .time { width:110px; }
+.log-table .event { width:100px; }
+
+.actions { text-align:right; }
+
+.log-detail-table {}
+.log-detail-table th { width:175px; }
+
+.jobs-table .job-edit { display:none; }
+.job-actions { width:40px; }
+
+.summary div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width:750px; }
+
+tr.alert-info { font-weight:bold; }
+
+#content ol.help { margin-bottom:15px; }
+#content .help li { line-height:20px; margin-bottom:3px; }
+
+.empty-content { background:url(indicator_large.gif) center no-repeat; padding:100px; }
+#ajax-indicator { display:inline-block; width:16px; height:16px; margin:10px; }
+#ajax-indicator.loading { background-image:url(indicator_small.gif); }

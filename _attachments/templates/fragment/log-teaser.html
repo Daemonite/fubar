@@ -1,0 +1,6 @@
+<tr{{#active}} class="alert-info"{{/active}}>
+  <td class="seq">{{logseq}}</td>
+  <td class="time"><a href="{{#logurl}}{{_id}}{{/logurl}}" title="{{datetime}}">{{datetime}}</a></td>
+  {{#includelogtype}}<td class="logtype">{{logtype}}</td>{{/includelogtype}}
+  <td class="summary"><div>{{#render}}log-teaser-{{logtype}}|log-teaser-default{{/render}}</div></td>
+</tr>
