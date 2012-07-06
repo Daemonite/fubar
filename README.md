@@ -12,7 +12,7 @@ Fubar is a CouchApp for scalable storage, exploration, and aggregation of log re
 ## Initial CouchDB Setup
 
 1. Install [Couch DB 1.2][downloadcouch]
-2. Go to Futon[futon]
+2. Go to [Futon][futon]
 3. Add an admin user to Couch
 4. Create an `errorlog` database
 
@@ -69,18 +69,18 @@ less powerful users just to the users list.
 
 #### Increasing login session length
 
-1. Go to the Futon Configuration[futonconfig] section
+1. Go to the Futon [Configuration][futonconfig] section
 2. Edit the `couch_httpd_auth` timeout value.
 
 #### Database Compaction
 
 The normal running of Couch can cause a lot of redundant data to build up - particularly after adding new documents.
 
-1. Go to the Futon Configuration[futonconfig] section
+1. Go to the Futon [Configuration][futonconfig] section
 2. Scroll to the bottom of the page and click "Add a new section".
 3. section: `compactions`, option: `\_default`, value: `[{db_fragmentation, "70%"}, {view_fragmentation, "60%"}, {from, "23:00"}, {to, "04:00"}]`
 
-For more information about compaction options: Compaction[compaction].
+For more information about compaction options: [Compaction][compaction].
 
 ### Apache Proxy
 
@@ -147,7 +147,7 @@ This logtype has an extra report in Fubar (Common Errors, which groups errors by
 
 #### types / rules
 
-These logtypes were added for FarCry[farcry] CRUD logs.
+These logtypes were added for [FarCry][farcry] CRUD logs.
 
 - **event**
 - **userid**
