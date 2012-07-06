@@ -27,13 +27,16 @@ This setup is appropriate when Fubar will not require strong security. This migh
 So on top of the basic CouchDB setup:
 
 1. Install the Fubar CouchApp to `errorlog`. You can either:
-   - Use the [CouchApp Command Line Tool][couchapp], OR
-   - Replicate Fubar from an existing "master" installation
+    
+    - Use the [CouchApp Command Line Tool][couchapp], OR
+    - Replicate Fubar from an existing "master" installation
+    
          {
            source : http://username:password@your-source.com.au/sourceapp,
            target : http://localhost:5984/errorlog,
            filter : errorlog/design
          }
+         
 2. Fubar should now be available by [browsing `errorlog`][logasapp].
 3. Set up Fubar to log to `errorlog`, no username or password required.
 
@@ -47,13 +50,16 @@ users can browse Fubar, but have to log in to access the data.
 2. Edit `errorlog` and click "Security" - add your user to the list of admins AND users. You can also add 
 less powerful users just to the users list.
 3. Install the Fubar CouchApp to `errorapp`. You can either:
-   - Use the [CouchApp Command Line Tool][couchapp], OR
-   - Replicate Fubar from an existing "master" installation
+    
+    - Use the [CouchApp Command Line Tool][couchapp], OR
+    - Replicate Fubar from an existing "master" installation
+    
          {
            source : http://username:password@your-source.com.au/sourceapp,
            target : http://localhost:5984/errorapp,
            filter : errorlog/design
          }
+         
 4. Fubar should now be available by [browsing `errorapp`][separateapp].
 5. Open Fubar and log in as an admin.
 6. Go to the Configuration page, and update the Log Database to `errorlog`
@@ -98,25 +104,25 @@ This also makes it easy to add IP restrictions. Note that you can also add rewri
 
 Logs are POSTed to the couch database (usually `errorlog`) as JSON objects. Except where excepted below, they are all strings. Required fields are:
 
-- *application*
-- *logtype* - logs in Fubar are almost always grouped by this value
-- *datetime* - this should be a string parsable by JavaScript; we use `mmmm, dd yyyy HH:mm:ss`
+- **application**
+- **logtype**: logs in Fubar are almost always grouped by this value
+- **datetime**: this should be a string parsable by JavaScript; we use `mmmm, dd yyyy HH:mm:ss`
 
 Optional fields that are displayed automatically are:
 
-- *machinename* - the server
-- #instancename* - for cases where one server has multiple engine instances
-- *sessionid* - if this is available Fubar will link this to a view showing all logs for that session 
-- *message* - if this is available (*error* logtype only) Fubar will link this to the application summary page, which shows how many of this error have occurred recently
-- *browser* - the user agent
-- *host*
-- *httpreferer*
-- *scriptname* & *querystring* - if these are available they will be displayed together as a link
-- *remoteaddress* - user's IP address; if this is available Fubar will link this value to a view showing all logs for that IP
-- *bot* - a string showing whether the application thought the user was a bot
-- *version* - an object; the `string` key will be displayed
-- *farcry* - an object; the `string` key will be displayed
-- *engine* - an object; the `string` key will be displayed
+- **machinename**: the server
+- **instancename**: for cases where one server has multiple engine instances
+- **sessionid**: if this is available Fubar will link this to a view showing all logs for that session 
+- **message**: if this is available (**error** logtype only) Fubar will link this to the application summary page, which shows how many of this error have occurred recently
+- **browser**: the user agent
+- **host**
+- **httpreferer**
+- **scriptname** & **querystring**: if these are available they will be displayed together as a link
+- **remoteaddress**: user's IP address; if this is available Fubar will link this value to a view showing all logs for that IP
+- **bot**: a string showing whether the application thought the user was a bot
+- **version**: an object; the `string` key will be displayed
+- **farcry**: an object; the `string` key will be displayed
+- **engine**: an object; the `string` key will be displayed
 
 ### logtype
 
@@ -124,36 +130,36 @@ Is used to group all logs displayed by Fubar, and is used as a hook for customis
 
 #### error
 
-This logtype has extra reports in Fubar (Common Errors, which groups errors by *message*) that the others do not. The following extra fields are also displayed if available:
+This logtype has an extra report in Fubar (Common Errors, which groups errors by **message**) that the others do not. The following extra fields are also displayed if available:
 
-- *type* aka Exception Type
-- *detail*
-- *extended_info*
-- *queryError*
-- *sql*
-- *where*
-- *stack* an array of template, line, location objects (if location == "project" then that stack line is emphasised)
-- *url* aka Post-process URL (an object) - for cases where the URL as the application sees it is not the same as scriptname?querystring
+- **type**: aka Exception Type
+- **detail**
+- **extended_info**
+- **queryError**
+- **sql**
+- **where**
+- **stack**: an array of template, line, location objects (if location == "project" then that stack line is emphasised)
+- **url**: aka Post-process URL (an object) - for cases where the URL as the application sees it is not the same as scriptname?querystring
 
 #### 404
 
-- *url* aka Post-process URL (an object) - for cases where the URL as the application sees it is not the same as scriptname?querystring
+- **url**: aka Post-process URL (an object) - for cases where the URL as the application sees it is not the same as scriptname?querystring
 
 #### types / rules
 
 These logtypes were added for FarCry[farcry] CRUD logs.
 
-- *event*
-- *userid*
-- *object* - the id of the object in question
-- *objecttype*
-- *notes*
+- **event**
+- **userid**
+- **object**: the id of the object in question
+- **objecttype**
+- **notes**
 
 #### security
 
-- *event*
-- *userid*
-- *notes*
+- **event**
+- **userid**
+- **notes**
 
 #### default
 
