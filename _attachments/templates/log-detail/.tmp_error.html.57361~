@@ -6,7 +6,7 @@
 {{#sql}}<tr><th>SQL:</th><td>{{sql}}</td></tr>{{/sql}}
 {{#where}}<tr><th>Where:</th><td>{{where}}</td></tr>{{/where}}
 {{#stack-exists}}
-<tr><th valign='top'>Context:</th><td>
+<tr><th valign='top'>Tag Context:</th><td>
     <ul>
       {{#stack}}<li>{{#is-project}}<strong>{{/is-project}}{{#undoubleback}}{{template}}{{/undoubleback}}&nbsp;(line: {{line}}){{#is-project}}</strong>{{/is-project}}</li>{{/stack}}
     </ul>

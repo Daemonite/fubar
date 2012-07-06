@@ -1,4 +1,4 @@
 {
-    "name": "Error Log",
-    "description": "Error Logging Couch App"
+    "name": "Fubar",
+    "description": "Fubar is a CouchApp for scalable storage, exploration, and aggregation of log records, with a particular focus on errors"
 }

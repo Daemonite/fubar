@@ -24,6 +24,7 @@
 
 tr.alert-info { font-weight:bold; }
 
+#content { overflow:hidden; }
 #content ol.help { margin-bottom:15px; }
 #content .help li { line-height:20px; margin-bottom:3px; }
 

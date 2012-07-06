@@ -1,0 +1,5 @@
+<table class="table log-detail-table">
+<tr><th>Event</th><td>{{event}}</td></tr>
+{{#userid}}<tr><th>User ID:</th><td>{{userid}}</td></tr>{{/userid}}
+{{#notes}}<tr><th>Notes:</th><td>{{notes}}</td></tr>{{/notes}}
+</table>

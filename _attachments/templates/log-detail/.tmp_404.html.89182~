@@ -1,0 +1,4 @@
+<strong>Post Processing URL</strong>
+<table class="table log-detail-table">
+{{#url}}<tr><th>{{key}}:</th><td>{{value}}</td></tr>{{/url}}
+</table>

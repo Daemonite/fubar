@@ -31,6 +31,8 @@
 			"remoteaddress",
 			"bot",
 			"version",
+			"farcry",
+			"engine",
 			"datetimeorderable",
 			"valarray"
 		],
