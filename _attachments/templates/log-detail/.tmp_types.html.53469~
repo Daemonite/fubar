@@ -1,7 +1,0 @@
-<table class="table log-detail-table">
-{{#event}}<tr><th>Event</th><td>{{event}}</td></tr>{{/event}}
-{{#userid}}<tr><th>User ID:</th><td>{{userid}}</td></tr>{{/userid}}
-<tr><th>Object ID:</th><td>{{object}} (<a href="http://{{host}}/index.cfm?objectid={{object}}">link</a>)</td></tr>
-<tr><th>Object Type:</th><td>{{objecttype}}</td></tr>
-{{#notes}}<tr><th>Notes:</th><td>{{notes}}</td></tr>{{/notes}}
-</table>
