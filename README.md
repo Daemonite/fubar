@@ -32,9 +32,9 @@ So on top of the basic CouchDB setup:
     - Replicate Fubar from an existing "master" installation
     
          {
-           source : http://username:password@your-source.com.au/sourceapp,
-           target : http://localhost:5984/errorlog,
-           filter : errorlog/design
+           source : "http://username:password@your-source.com.au/sourceapp",
+           target : "http://localhost:5984/errorlog",
+           filter : "errorlog/design"
          }
          
 2. Fubar should now be available by [browsing `errorlog`][logasapp].
@@ -55,9 +55,9 @@ less powerful users just to the users list.
     - Replicate Fubar from an existing "master" installation
     
          {
-           source : http://username:password@your-source.com.au/sourceapp,
-           target : http://localhost:5984/errorapp,
-           filter : errorlog/design
+           source : "http://username:password@your-source.com.au/sourceapp",
+           target : "http://localhost:5984/errorapp",
+           filter : "errorlog/design"
          }
          
 4. Fubar should now be available by [browsing `errorapp`][separateapp].
@@ -82,7 +82,7 @@ The normal running of Couch can cause a lot of redundant data to build up - part
 
 For more information about compaction options: [Compaction][compaction].
 
-### Apache Proxy
+#### Apache Proxy
 
 The following can be set up to proxy Couch DB requests through an Apache Virtual:
 

@@ -20,7 +20,7 @@
 .jobs-table .job-edit { display:none; }
 .job-actions { width:40px; }
 
-.summary div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width:750px; }
+.summary div, .message div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width:750px; }
 
 tr.alert-info { font-weight:bold; }
 

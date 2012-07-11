@@ -133,7 +133,7 @@ $(function() {
                 },
                 sparkline : function(){
                     return function(text,render){
-						return util.sparkline(render(text),true);
+						return util.sparkline(render(text));
                     };
                 }
             });

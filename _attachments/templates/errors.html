@@ -15,7 +15,7 @@
   <tbody>
     {{#errors}}
     <tr{{#active}} class="alert-info"{{/active}}>
-      <td class="message"><a href="{{#errorurl}}{{message}}{{/errorurl}}">{{message}}</a></td>
+      <td class="message"><div><a href="{{#errorurl}}{{message}}{{/errorurl}}">{{message}}</a></div></td>
       <td class="sparkline">{{#sparkline}}{{data}}{{/sparkline}}</td>
 	  <td class="total">{{total}}</td>
     </tr>
