@@ -1,7 +1,10 @@
 {
     "env" : {
         "default" : {
-            "db" : "http://localhost:5984/errorlog"
+            "db" : "http://daemon:n01kn0w5@localhost:5984/errorlog"
+        },
+        "prod" : {
+            "db" : "http://daemon:n01kn0w5@couchdb.kingston.daemonite.com/errorapp"
         }
     }
 }

@@ -1,7 +1,16 @@
 {{#paginate}}
-<div class="actions">
-{{#nextpage}}<a href="{{nextpage}}" class="btn">more logs</a>{{/nextpage}} 
-{{#applicationsummarypage}}<a href="{{applicationsummarypage}}" class="btn">application summary</a>{{/applicationsummarypage}} 
-{{#applicationlogpage}}<a href="{{applicationlogpage}}" class="btn">application log</a>{{/applicationlogpage}}
+<div class="btn-toolbar">
+  {{#hasmachines}}
+  <div class="btn-group" data-toggle="buttons-radio">
+	{{#machines}}<a class="btn{{#active}} active{{/active}}" href="{{url}}">{{name}}</a>{{/machines}}
+  </div>
+  {{/hasmachines}}
+  <div class="btn-group pull-right">
+	{{#nextpage}}<a href="{{nextpage}}" class="btn">Next Page</a>{{/nextpage}} 
+  </div>
+  <div class="btn-group pull-right">
+	{{#applicationsummarypage}}<a href="{{applicationsummarypage}}" class="btn">Common Errors</a>{{/applicationsummarypage}} 
+	{{#applicationlogpage}}<a href="{{applicationlogpage}}" class="btn">Full Log</a>{{/applicationlogpage}}
+  </div>
 </div>
 {{/paginate}} 

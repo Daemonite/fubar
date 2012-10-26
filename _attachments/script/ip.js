@@ -7,6 +7,7 @@ $(function() {
     function drawItems() {
 		
         var params = { 
+			include_docs : true,
             startkey : [ util.url.app, util.url.ip, new Date() ],
             endkey : [ util.url.app, util.url.ip ],
 			descending : true,
@@ -19,11 +20,11 @@ $(function() {
             
             return $.when({
                 logs : data.rows.map(function(val,index){ 
-                    if (util.url.logid && util.url.logid == val.value._id) val.value.active = true; 
-                    val.value["type-"+val.value.logtype] = true;
-                    if (val.value.event) val.value["event-"+val.value.event] = true;
-                    val.value["logseq"] = index + 1;
-                    return val.value; 
+                    if (util.url.logid && util.url.logid == val.doc._id) val.doc.active = true; 
+                    val.doc["type-"+val.doc.logtype] = true;
+                    if (val.doc.event) val.doc["event-"+val.doc.event] = true;
+                    val.doc["logseq"] = index + 1;
+                    return val.doc; 
                 })
             })
         });

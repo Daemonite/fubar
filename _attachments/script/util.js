@@ -329,6 +329,23 @@
 				data,
 				"</div>"
 				].join("");
+		},
+		
+		showApplication : function(app){
+			// if there aren't any apps in the config, let everyone see all of them
+			if (!util.applications) 
+				return true;
+			
+			// otherwise only show an application if the user is in its access list
+			else if (util.applications[app]) {
+				for (var i=0; i<util.applications[app].access.length; i++)
+					if (util.applications[app].access[i].userid == util.userid) return true;
+				
+				return false
+			}
+			
+			else 
+				return false;
 		}
     };
 	
@@ -398,11 +415,14 @@
 			var apps = [];
 			
 			if (data.rows.length) {
-				var apps = data.rows[0].value.sort().map(function(val){
+				var apps = data.rows[0].value.filter(util.showApplication).map(function(val){
 					return {
-						name: val,
+						id: val,
+						name: util.applications[val] ? util.applications[val].name : val,
 						active: (util.url.app && util.url.app == val)
 					};
+				}).sort(function(a,b){
+					return (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1)
 				});
 				
 				$("#application-menu").renderTemplate([ "fragment/application-menu" ], {
@@ -428,6 +448,11 @@
 			util.dbname = config.db;
 			util.db = $.couch.db(config.db);
 			
+			util.applications = {};
+			if (config.applications) {
+				for (var i=0; i<config.applications.length; i++) util.applications[config.applications[i].id] = config.applications[i];
+			}
+			
 			util.stopChanges();
 			if (util.sessionready) $(document).trigger("sessionReady");
 		}
@@ -443,6 +468,9 @@
 		
 	    $("#account").couchLogin({
 	        loggedIn : function(r) {
+				util.userid = r.userCtx.name;
+				util.username = r.userCtx.name;
+				
 	            $("#account").renderTemplate("authentication/loggedin",{
 	                username : r.userCtx.name,
 	                userpage : "_utils/document.html?" + encodeURIComponent(r.info.authentication_db) + "/org.couchdb.user%3A" + encodeURIComponent(r.userCtx.name),

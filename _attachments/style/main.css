@@ -20,7 +20,13 @@
 .jobs-table .job-edit { display:none; }
 .job-actions { width:40px; }
 
-.summary div, .message div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width:750px; }
+.applications-table {}
+.applications-table .changed { font-weight:bold; color:#ffa500; }
+.applications-table .changed.added { font-weight:bold; color:#5c9900; }
+.applications-table .changed.updated { font-weight:bold; color:#ffa500; }
+.applications-table .changed.removed { font-weight:bold; color:#FF0000; }
+
+.summary div, .message div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width:700px; }
 
 tr.alert-info { font-weight:bold; }
 

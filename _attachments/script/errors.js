@@ -1,12 +1,16 @@
 // Apache 2.0 J Chris Anderson 2011
 $(function() {
-    
-	if (util.url.app && util.url.app.length) {
-		document.title = "Common Errors - " + util.url.app + " - Fubar";
-		$("#title").html("Common Errors - " + util.url.app);
-	}
+	
+	util.url.machine = util.url.machine || "all";
     
     function drawItems() {
+		
+		if (util.url.app && util.url.app.length) {
+			var appname = util.applications[util.url.app] ? util.applications[util.url.app].name : util.url.app;
+			document.title = "Common Errors - " + appname + " - Fubar";
+			$("#title").html("Common Errors - " + appname);
+		}
+	    
         var now = new Date();
 		var hours = util.hourRange(new Date(now - 7 * 24 * 60 * 60 * 1000),now);
         var params = { 
@@ -15,9 +19,32 @@ $(function() {
 			group_level : 2,
             update_seq:true
         }
+		var machines = $.Deferred();
 		
-		if (util.url.app && util.url.app.length)
-			params.group_level = 3;
+		if (util.url.app && util.url.app.length) {
+			params.group_level = (util.url.machine && util.url.machine != "all" ? 4 : 3);
+			
+			machines = util.deferredView("machines",{ startkey:[util.url.app], endkey:[util.url.app+"_"], group:true }).pipe(function(data){
+				var aResult = data.rows.map(function(val){ 
+					return {
+						name: val.key[1],
+						active: (util.url.machine == val.key[1]),
+						url: util.rootpath+"errors.html?app="+util.url.app+"&machine="+encodeURIComponent(val.key[1])+(util.url.error ? "&error="+encodeURIComponent(util.url.error) : "")
+					}; 
+				});
+				
+				aResult.unshift({
+					name: "all",
+					active: (util.url.machine == "all"),
+					url: util.rootpath+"errors.html?app="+util.url.app+(util.url.error ? "&error="+encodeURIComponent(util.url.error) : "")
+				});
+				
+				return $.when(aResult);
+			});
+		}
+		else{
+			machines.resolve([]);
+		}
 		
         var errors = util.deferredView("logerrors-byhour",params).pipe(function(data){
 			if (util.url.app && util.url.app.length)
@@ -28,7 +55,21 @@ $(function() {
 			
 			var logs = [], summary = {}, results = [];
 			
-			if (util.url.app && util.url.app.length) {
+			if (util.url.machine && util.url.machine != "all") {
+				var logs = data.rows.map(function(val){
+					var result = {};
+					
+					if (val.key[2] == util.url.app && val.key[3] == util.url.machine){
+						result[val.key[1]] = {
+							total: val.value,
+							hours: [{ hour:val.key[0], total:val.value }]
+						};
+					}
+					
+					return result;
+				});
+			}
+			else if (util.url.app && util.url.app.length) {
 				var logs = data.rows.map(function(val){
 					var result = {};
 					
@@ -86,14 +127,17 @@ $(function() {
 			
 			return $.when(results);
         });
-        
+		
         var applications = util.deferredView("applications",{ update_seq:true }).pipe(function(data){
-            var apps = data.rows[0].value.sort().map(function(val){
+            var apps = data.rows[0].value.sort().filter(util.showApplication).map(function(val){
 				return {
-					name : val,
+					id : val, 
+					name: util.applications[val] ? util.applications[val].name : val,
 					active : (util.url.app && util.url.app == val),
 					key : val
 				};
+			}).sort(function(a,b){
+				return (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1)
 			});
 			
 			apps.unshift({
@@ -105,20 +149,25 @@ $(function() {
 			return $.when(apps);
         });
 		
-        var page = $.when(applications,errors);
-        page.done(function(applications,errors){
+        var page = $.when(applications,errors,machines);
+        page.done(function(applications,errors,machines){
             
             $("#content").renderTemplate([ "errors", "fragment/pagination" ], { 
                 errors : errors, 
-                applications : applications,
+                applications : applications.slice(0,7),
+				moreapplications : applications.slice(7),
+				moreapplicationsactive : (applications.slice(7).length ? applications.slice(7).reduce(function(a,b){ return (typeof(a)=="object" ? a.active : a) || b.active }) : []),
+				hasmoreapplications: (applications.length >= 6),
 				paginate: 1,
-                applicationlogpage : (util.url.app && util.url.app.length ? util.rootpath+"application.html?app="+util.url.app : ""),
+				hasmachines: (machines.length > 0),
+				machines: machines,
+                applicationlogpage : (util.url.app && util.url.app.length ? util.rootpath+"application.html?app="+util.url.app : "") + (util.url.machine != "all" ? "&machine="+encodeURIComponent(util.url.machine) : ""),
                 errorurl : function(){
                     return function(message,render){
 						message = render(message);
 						
 						if (util.url.app && util.url.app.length)
-	                        return util.rootpath+"error.html?app="+util.url.app+"&error="+encodeURIComponent(message);
+	                        return util.rootpath+"error.html?app=" + util.url.app + (util.url.machine != "all" ? "&machine="+encodeURIComponent(util.url.machine) : "") + "&error=" + encodeURIComponent(message);
 						else
 							return util.rootpath+"error.html?error="+encodeURIComponent(message);
                     };
@@ -126,7 +175,7 @@ $(function() {
                 applicationurl : function(){
                     return function(app){
 						if (app.length)
-							return util.rootpath+"errors.html?app="+app + (util.url.error ? "&error="+encodeURIComponent(util.url.error) : "");
+							return util.rootpath+"errors.html?app="+app + (util.url.machine != "all" ? "&machine="+encodeURIComponent(util.url.machine) : "") + (util.url.error ? "&error="+encodeURIComponent(util.url.error) : "");
 						else
                         	return util.rootpath+"errors.html" + (util.url.error ? "?error="+encodeURIComponent(util.url.error) : "");
                     };

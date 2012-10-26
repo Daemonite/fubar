@@ -2,6 +2,7 @@
 $(function() {
     
     var replicatorDB = $.couch.db("_replicator");
+	var userDB = $.couch.db("_users");
     
     function drawConfig() {
         var params = { 
@@ -43,8 +44,12 @@ $(function() {
 			}));
 		});
 		
-        var page = $.when(dbs,util.config,replicationjobs,logtypes);
-        page.done(function(dbs,config,jobs,logtypes){
+		var applications = util.deferredView("applications").pipe(function(data){
+			return $.when(data.rows[0].value.sort());
+		});
+		
+        var page = $.when(dbs,util.config,replicationjobs,logtypes,applications);
+        page.done(function(dbs,config,jobs,logtypes,applications){
 			
             for (var i=0; i<dbs.length; i++)
 				dbs[i].active = (config.db == dbs[i].name);
@@ -67,17 +72,38 @@ $(function() {
 				};
             }
             
-            $("#content").renderTemplate([ "config", "config/general", "config/replication", "config/installation", "replication/form", "replication/teaser" ], { 
+			if (!config.applications)
+				config.applications = [];
+			for (var i=0; i<applications.length; i++){
+				var found = -1;
+				
+				for (var j=0; j<config.applications.length; j++)
+					if (config.applications[j].id == applications[i]) found = j;
+				
+				if (found == -1)
+					config.applications.push({
+						index: config.applications.length,
+						id: applications[i],
+						name: applications[i],
+						history: 14,
+						access: [{ userid:util.userid, username:util.username }],
+						alerts: []
+					});
+			}
+			
+            $("#content").renderTemplate([ "config", "config/general", "config/applications", "config/replication", "replication/form", "replication/teaser", "config/access" ], { 
 				dbs : dbs,
                 logtypes : logtypes,
-                jobs : jobs
+                jobs : jobs,
+				applications : config.applications
             },function(){
 				$(".collapse").collapse();
+				$("span[rel=popover]").popover();
 			});
             
         });
         page.fail(util.renderError);
-        
+		
     };
     
 	util.setupChanges(0);
@@ -154,6 +180,302 @@ $(function() {
 		
 		return false;
 	});
+	
+	
+	jQuery.fn.edit = function(){
+		if (this.size() && !this.is(".editing")) {
+			this.addClass("editing").html("<input type='text' value='" + this.html() + "'>").find("input").bind("blur", function(){
+				$(this).parent().unedit();
+			}).bind("keypress",function(e){
+				if (e.which == 13) $(this).parent().unedit();
+			}).click().select();
+		}
+		
+		return this;
+	};
+	jQuery.fn.unedit = function(){
+		if (this.size() && this.is(".editing")) {
+			var newval = this.find("input").val(), oldval = this.data("oldvalue");
+			
+			if (newval.toString() !== oldval.toString()) 
+				this.data("change", { 
+					index : this.parents("tr").first().data("index"), 
+					field : this.data("field"), 
+					value : newval 
+				}).addClass("changed").html(newval);
+			else 
+				this.data("change", null).removeClass("changed").html(oldval);
+				
+			this.removeClass("editing");
+		}
+		
+		return this;
+	};
+	jQuery.fn.editable = function(){
+		this.live("click",function(){
+			$(this).edit();
+		});
+	};
+	$("td.application-name,td.application-history").editable();
+	
+	$(".application-access-item-remove").live("click",function(){
+		var self = $(this).parents(".application-access-item");
+		
+		if (self.is(".removed"))
+			self.data("change",null).removeClass("changed").removeClass("removed").find("application-access-item-edit").hide();
+		else if (self.is(".added"))
+			self.remove();
+		else
+			self.data("change",{ 
+				index : self.parents("tr").first().data("index"),
+				field : "access",
+				action : "remove",
+				value: {
+					userid: self.data("userid"),
+					username: self.data("username")
+				}
+			}).addClass("changed").addClass("removed").find("application-access-item-edit").show();
+		
+		return false;
+	});
+	
+	$(".application-access-item-add").live("click",function(){
+		var self = $(this), index = self.parents("tr").first().data("index");
+		
+		var users = util.deferredAll({ db:userDB, resolve:true }).pipe(function(data){
+            var users = data.filter(function(val){ 
+				return (val.name); 
+			}).sort(function(a,b){ 
+				return (a._id < b._id ? 1 : -1); 
+			}).map(function(val){
+				return {
+					userid : val.name,
+					username : val.name
+				}
+			});
+            
+            return $.when(users)
+        });
+		
+		beginadd = $.when(util.config,users);
+		beginadd.done(function(config,users){
+			$("#modal").renderTemplate([ "config/adduser" ],{
+				targettypes : [{
+					id : "email",
+					name : "Email"
+				},{
+					id : "pushover",
+					name : "Pushover"
+				}],
+				users : users.filter(function(val){
+					for (var i=0; i<config.applications[index].access.length; i++)
+						if (val.userid == config.applications[index].access[i].userid) return false;
+					return true;
+				})
+			},function(){
+				
+				$("#modal .btn-primary").unbind("click").bind("click",function(){
+					if ($("input[name=select-user]:checked").val() == "existing") {
+						newuser = $.when({
+							userid : $("#existing-user").val(),
+							username : $("#existing-user option:selected").html(),
+							sendalerts : ($("#new-user-sendalerts:checked").size() == 1),
+							threshold : parseInt($("#new-user-threshold").val())
+						});
+					}
+					else {
+						newuser = $.Deferred();
+						
+						$.couch.signup({
+							name : $("#new-user").val(),
+							targettype : $("#new-user-targettype").val(),
+							targetid : $("#new-user-targetid").val()
+						}, $("#new-user-password").val() || $("#new-user").val(), {
+							success: function(){
+								newuser.resolve({ 
+									userid : $("#new-user").val(), 
+									username : $("#new-user").val(),
+									sendalerts : ($("#new-user-sendalerts:checked").size() == 1),
+									threshold : parseInt($("#new-user-threshold").val())
+								});
+							}
+						});
+					}
+					
+					newuser.done(function(newuser){
+						$().renderTemplate([ "config/access" ],{
+							userid : newuser.userid,
+							username : newuser.username,
+							sendalerts : newuser.sendalerts,
+							class : "changed added"
+						},function(html){
+							$(html).insertBefore(self.parents(".application-access-item")).data("change",{ 
+								index : index, 
+								field : "access", 
+								action : "add", 
+								value : newuser 
+							});
+						});
+					});
+					newuser.fail(util.renderError);
+					
+					$("#modal").modal("hide");
+				});
+				
+				$("#modal").modal("show");
+				
+			});
+		});
+		beginadd.fail(util.renderError);
+		
+		return false;
+	});
+	
+	$(".application-access-item-edit").live("click",function(){
+		var self = $(this).parents(".application-access-item"), userappdata = self.data("change");
+		
+		var userdata = util.deferredGet("org.couchdb.user:"+self.data("userid"),{ db:userDB })
+		
+		var users = util.deferredAll({ db:userDB, resolve:true }).pipe(function(data){
+            var users = data.filter(function(val){ 
+				return (val.name); 
+			}).sort(function(a,b){ 
+				return (a._id < b._id ? 1 : -1); 
+			}).map(function(val){
+				return {
+					userid : val.name,
+					username : val.name
+				}
+			});
+            
+            return $.when(users)
+        });
+		
+		var beginedit = $.when(userdata,util.config,users);
+		beginedit.done(function(userdata,config,users){
+			var index = parseInt(self.parents("tr").first().data("index"));
+			
+			if (userappdata){
+				userappdata = userappdata.value;
+			}
+			else {
+				userappdata = null;
+				for (var i=0; i<config.applications[index].access.length; i++){
+					if (config.applications[index].access[i].userid == userdata.name)
+						userappdata = config.applications[index].access[i];
+				}
+			}
+			
+			$("#modal").renderTemplate([ "config/edituser" ],{
+				username : userdata.name,
+				targettypes : [{
+					id : "email",
+					name : "Email",
+					active : (userdata.targettype == "email")
+				},{
+					id : "pushover",
+					name : "Pushover",
+					active : (userdata.targettype == "pushover")
+				}],
+				targetid : userdata.targetid,
+				sendalerts : userappdata.sendalerts,
+				threshold : userappdata.threshold,
+				users : users.filter(function(val){
+					for (var i=0; i<config.applications[index].access.length; i++)
+						if (val.userid == config.applications[index].access[i].userid) return false;
+					return true;
+				})
+			},function(){
+				$("#modal .btn-primary").unbind("click").bind("click",function(){
+					if ($("#user-password").val().length) {
+						delete userdata.password_sha;
+						delete userdata.salt;
+						userdata.password = $("#user-password").val();
+					}
+					userdata.targettype = $("#user-targettype").val();
+					userdata.targetid = $("#user-targetid").val();
+					userupdate = util.deferredSave(userdata,{ db:userDB });
+					
+					userupdate.done(function(){
+						$().renderTemplate([ "config/access" ],{
+							userid : userdata.name,
+							username : userdata.name,
+							sendalerts : ($("#user-sendalerts:checked").size() == 1),
+							class : "changed updated"
+						},function(html){
+							$(html).replaceAll(self).data("change",{ 
+								index : index, 
+								field : "access", 
+								action : "update", 
+								value : {
+									userid : userdata.name,
+									sendalerts : ($("#user-sendalerts:checked").size() == 1),
+									threshold : parseInt($("#user-threshold").val())
+								} 
+							});
+						});
+					});
+					userupdate.fail(util.renderError);
+					
+					$("#modal").modal("hide");
+				});
+				
+				$("#modal").modal("show");
+			});
+		});
+		beginedit.fail(util.renderError);
+		
+		return false;
+	});
+	
+	$("a.applications-update").live("click",function(){
+		var changes = $(".changed").map(function(index,el){
+			return $(this).data("change");
+		});
+		
+		util.config.done(function(config){
+			for (var i=0; i<changes.length; i++){
+				switch (changes[i].field){
+					case "name":
+						config.applications[changes[i].index].name = changes[i].value;
+						break;
+					
+					case "history":
+						config.applications[changes[i].index].history = parseInt(changes[i].value);
+						break;
+						
+					case "access":
+						if (changes[i].action == "add"){
+							config.applications[changes[i].index].access.push(changes[i].value);
+						}
+						else if (changes[i].action == "update"){
+							for (var j=0; j<config.applications[changes[i].index].access.length; j++){
+								if (config.applications[changes[i].index].access[j].userid == changes[i].value.userid){
+									config.applications[changes[i].index].access[j].sendalerts = changes[i].value.sendalerts;
+									config.applications[changes[i].index].access[j].threshold = changes[i].value.threshold;
+								}
+							}
+						}
+						else {
+							config.applications[changes[i].index].access = config.applications[changes[i].index].access.filter(function(val){
+								return (val.userid != changes[i].value.userid);
+							});
+						}
+						
+						break;
+				}
+			}
+			
+			var complete = util.deferredSave(config,{ db:util.appdb });
+			complete.done(function(){
+				util.stopChanges();
+				if (util.sessionready) $(document).trigger("sessionReady");
+			});
+		});
+		
+		return false;
+	});
+	
 	
     $("a.job-create").live("click",function(){
         var query_params = {}, query_params_array = [];

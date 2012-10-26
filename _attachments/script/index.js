@@ -14,9 +14,13 @@ $(function() {
             util.setupChanges(data.update_seq);
 			util.onChanges(drawItems);
             
-            var applogcounts = apps.map(function(app){
+            var applogcounts = apps.filter(util.showApplication).map(function(app){
                 return util.deferredView("log-types-byhour",{ startkey:[ app, hours[0] ], endkey:[ app, hours[hours.length-1] ], group:true }).pipe(function(data){
-                    var result = { name : app, logtypes : {} }, j = 0, logtypes = {}, newdata = [], newval = 0;
+                    var result = { 
+						id : app, 
+						name: util.applications[app] ? util.applications[app].name : app,
+						logtypes : {} 
+					}, j = 0, logtypes = {}, newdata = [], newval = 0;
                     
                     for (var i=0; i<data.rows.length; i++){
                         logtypes[data.rows[i].key[2]] = logtypes[data.rows[i].key[2]] || {};
@@ -51,7 +55,10 @@ $(function() {
         var page = $.when(logtypes,applications);
         page.done(function(logtypes,apps){
             if (apps.constructor != Array) apps = [ apps ];
-            
+            apps.sort(function(a,b){
+				return (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1)
+			});
+			
             for (var i=0; i<apps.length; i++){
                 var newdata = [];
                 

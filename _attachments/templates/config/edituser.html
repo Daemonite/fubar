@@ -1,0 +1,62 @@
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">×</button>
+	<h3>Edit User</h3>
+</div>
+<div class="modal-body">
+	<form class="form form-horizontal">
+		<fieldset>
+			<legend>User</legend>
+			
+			<div class="control-group">
+				<label class="control-label" for="new-user">Username</label>
+				<div class="controls">{{username}}</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="user-password">Password</label>
+				<div class="controls">
+					<input type="text" name="user-password" id="user-password" value="" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="user-targettype">Contact Type</label>
+				<div class="controls">
+					<select name="new-user-targettype" id="user-targettype">
+						{{#targettypes}}<option value="{{id}}" {{#active}}selected{{/active}}>{{name}}</option>{{/targettypes}}
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="user-targetid">Contact ID</label>
+				<div class="controls">
+					<input type="text" name="user-targetid" id="user-targetid" value="{{targetid}}" />
+				</div>
+			</div>
+		</fieldset>
+		
+		<fieldset>
+			<legend>Alerts</legend>
+			
+			<div class="control-group">
+				<label class="control-label" for="user-sendalerts">Send Alerts</label>
+				<div class="controls">
+					<input name="user-sendalerts" id="user-sendalerts" type="checkbox" value="1" {{#sendalerts}}checked{{/sendalerts}}>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="user-threshold">Threshold</label>
+				<div class="controls">
+					<input name="user-threshold" id="user-threshold" value="{{threshold}}">
+					<span class="help-inline">Number of times a single error should occur in a 15 minute period to trigger an alert.</span>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+<div class="modal-footer">
+	<a href="#" class="btn" data-dismiss="modal" onclick="$('#modal').modal('hide'); return false;">Close</a>
+	<a href="#" class="btn btn-primary">Update</a>
+</div>

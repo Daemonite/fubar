@@ -1,0 +1,31 @@
+<h2>Applications</h2>
+<form class="form form-config applications-table">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th class="application-id">ID</th>
+				<th class="application-name">Name</th>
+				<th class="application-history">History (days) <span class="icon-question-sign" title="History Retention" data-content="<p>While the core Fubar CouchApp does not have history purging processes, some client libraries / modules may. Those modules can use this setting to determine the minimum number of days to retain.</p>" rel="popover"></span></th>
+				<th class="application-access">Access <span class="icon-question-sign" title="Access" data-content="<p>For full security options, you will need to create and secure separate log databases (see Fubar documentation). The Access user list provides 'apparant' security by only showing a user specific applications.</p>" rel="popover"></span></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#applications}}
+			<tr data-index="{{index}}">
+				<td class="application-id">{{id}}</td>
+				<td class="application-name" data-field="name" data-oldvalue="{{name}}">{{name}}</td>
+				<td class="application-history" data-field="history" data-oldvalue="{{history}}">{{history}}</td>
+				<td class="application-access">
+					{{#access}}{{> config-access}}{{/access}}
+					<div class="application-access-item"><a href="##" class="application-access-item-add">add user</a> <a href="##" class="application-access-item-add"><span class="icon-plus"></span></a></div>
+				</td>
+			</tr>
+			{{/applications}}
+		</tbody>
+	</table>
+	<div class="form-actions">
+		<a href="#" class="btn applications-update">Save Changes</a>
+	</div>
+</form>
+
+<div class="modal hide" id="modal"></div>

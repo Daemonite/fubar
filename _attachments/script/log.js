@@ -36,8 +36,8 @@ $(function() {
             
             $("#content").renderTemplate([ "log-detail", "log-detail/default", "log-detail/"+doc.logtype ],{
                 log : doc,
-				applicationlogpage : util.rootpath+"application.html?app="+doc.application+"&logtype="+doc.logtype+"&logid="+doc._id,
-				applicationsummarypage : util.rootpath+"errors.html?app="+doc.application+"&error="+encodeURIComponent(doc.message),
+				applicationlogpage : util.rootpath+"application.html?app="+doc.application+"&machine="+encodeURIComponent(doc.machinename)+"&logtype="+doc.logtype+"&logid="+doc._id,
+				applicationsummarypage : util.rootpath+"errors.html?app="+doc.application+"&machine="+encodeURIComponent(doc.machinename)+"&error="+encodeURIComponent(doc.message),
                 sessionpage : util.rootpath+"session.html?session="+doc.sessionid+"&logid="+doc._id,
 				ippage : util.rootpath+"ip.html?app="+doc.application+"&ip="+doc.remoteaddress+"&logid="+doc._id,
 				undoubleback : function(){

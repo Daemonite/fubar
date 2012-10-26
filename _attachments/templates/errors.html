@@ -2,6 +2,14 @@
   {{#applications}}
   <li{{#active}} class="active"{{/active}}><a href="{{#applicationurl}}{{key}}{{/applicationurl}}">{{name}}</a></li>
   {{/applications}}
+  {{#hasmoreapplications}}
+  <li class="dropdown{{#moreapplicationsactive}} active{{/moreapplicationsactive}}">
+	<a class="dropdown-toggle" data-toggle="dropdown" href="#">More Applications<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+    {{#moreapplications}}<li{{#active}} class="active"{{/active}}><a href="{{#applicationurl}}{{key}}{{/applicationurl}}">{{name}}</a></li>{{/moreapplications}}
+    </ul>
+  </li>
+  {{/hasmoreapplications}}
 </ul>
 {{> fragment-pagination}}
 <table class="table table-striped error-table">
